@@ -1,11 +1,13 @@
 package pl.itcrowd.tutorials.richfaces.domain;
 
+import java.io.Serializable;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class Album {
+public class Album implements Serializable {
 
     private Artist artist;
 
@@ -17,6 +19,11 @@ public class Album {
 
     private Map<String, AlbumTranslation> translations = new HashMap<String, AlbumTranslation>();
 
+    public Album()
+    {
+        this.id = Calendar.getInstance().getTimeInMillis();
+    }
+
     public Artist getArtist()
     {
         return artist;
@@ -24,6 +31,9 @@ public class Album {
 
     public void setArtist(Artist artist)
     {
+        if(null!=artist){
+            ensemble=null;
+        }
         this.artist = artist;
     }
 
@@ -32,8 +42,19 @@ public class Album {
         return ensemble;
     }
 
+    public String getArtistNameOrEnsembleName(){
+        if(null==artist){
+            return ensemble==null ? null : ensemble.getName();
+        }else{
+            return artist.getName();
+        }
+    }
+
     public void setEnsemble(Ensemble ensemble)
     {
+        if(null!=ensemble){
+            artist=null;
+        }
         this.ensemble = ensemble;
     }
 
@@ -79,7 +100,7 @@ public class Album {
 
         Album album = (Album) o;
 
-        return !(id != null ? !id.equals(album.id) : album.id != null);
+        return !(getId() == null || !getId().equals(album.getId()));
     }
 
     @Override

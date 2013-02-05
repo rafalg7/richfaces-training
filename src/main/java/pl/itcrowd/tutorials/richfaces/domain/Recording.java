@@ -1,6 +1,8 @@
 package pl.itcrowd.tutorials.richfaces.domain;
 
-public class Recording {
+import java.io.Serializable;
+
+public class Recording implements Serializable {
 
     private Artist artist;
 
@@ -61,7 +63,7 @@ public class Recording {
 
         Recording recording = (Recording) o;
 
-        return !(id != null ? !id.equals(recording.id) : recording.id != null);
+        return !(getId() == null || !getId().equals(recording.getId()));
     }
 
     @Override

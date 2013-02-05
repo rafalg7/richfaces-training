@@ -1,6 +1,9 @@
 package pl.itcrowd.tutorials.richfaces.domain;
 
-public class Track {
+import java.io.Serializable;
+import java.util.Calendar;
+
+public class Track implements Serializable {
 
     private Album album;
 
@@ -9,6 +12,11 @@ public class Track {
     private int position;
 
     private Recording recording;
+
+    public Track()
+    {
+
+    }
 
     public Album getAlbum()
     {
@@ -53,6 +61,7 @@ public class Track {
     @Override
     public boolean equals(Object o)
     {
+
         if (this == o) {
             return true;
         }
@@ -62,7 +71,7 @@ public class Track {
 
         Track track = (Track) o;
 
-        return !(id != null ? !id.equals(track.id) : track.id != null);
+        return !(getId() == null || !getId().equals(track.getId()));
     }
 
     @Override

@@ -1,6 +1,8 @@
 package pl.itcrowd.tutorials.richfaces.domain;
 
-public class Ensemble {
+import java.io.Serializable;
+
+public class Ensemble implements Serializable {
 
     private Long id;
 

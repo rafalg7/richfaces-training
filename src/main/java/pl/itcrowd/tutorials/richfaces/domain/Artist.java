@@ -1,6 +1,8 @@
 package pl.itcrowd.tutorials.richfaces.domain;
 
-public class Artist {
+import java.io.Serializable;
+
+public class Artist implements Serializable {
 
     private Long id;
 

@@ -2,13 +2,157 @@
         PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:rich="http://richfaces.org/rich" xmlns:a4j="http://richfaces.org/a4j">
 
 <h:head>
     <title>Albums</title>
 </h:head>
 
 <h:body>
+    <h:form id="encForm">
+        <h:commandButton value="Delete" action="#{albumsListView.removeSelectedAlbums}">
+
+        </h:commandButton>
+        <rich:dataTable id="albumsList" value="#{albumsListView.albumList}" var="album">
+            <rich:column>
+                <f:facet name="header">
+                    Select
+                </f:facet>
+                <h:selectBooleanCheckbox value="#{albumsListView.selectedAlbums[album]}"/>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    Artist or ensemble
+                </f:facet>
+                <h:outputText value="#{album.artistNameOrEnsembleName}"/>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    Title
+                </f:facet>
+                <h:outputText value="#{album.translations[facesContext.viewRoot.locale.ISO3Language].title}"/>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    Actions
+                </f:facet>
+                <h:commandButton value="Edit" action="#{albumDetailsView.setCurrentAlbum(album)}">
+                    <a4j:ajax render="tabPanel titleGrid trackList"/>
+                </h:commandButton>
+            </rich:column>
+        </rich:dataTable>
+
+        <rich:tabPanel id="tabPanel" switchType="client">
+            <a4j:repeat value="#{albumDetailsView.availableLanguages}" var="lang">
+                <rich:tab header="#{lang}" name="#{lang}">
+                    <f:facet name="header">
+                        #{lang}
+                    </f:facet>
+
+                    <h:panelGrid columns="3">
+                        <h:outputText value="Title"/>
+                        <h:inputText id="titleEdit" value="#{albumDetailsView.selectedAlbum.translations[lang].title}" required="true"/>
+                        <rich:message for="titleEdit"/>
+                    </h:panelGrid>
+                </rich:tab>
+            </a4j:repeat>
+        </rich:tabPanel>
+
+        <h:panelGrid id="titleGrid" columns="2">
+            <h:outputText value="Ensemble"/>
+            <h:selectOneMenu id="ensebleSel" value="#{albumDetailsView.selectedAlbum.ensemble}" converter="#{albumDetailsView.ensembleConverter}">
+                <f:selectItem noSelectionOption="true"/>
+                <f:selectItems value="#{albumDetailsView.ensemblesList}" var="ens" itemLabel="#{ens.name}" itemValue="#{ens}"/>
+                <a4j:ajax render="artistSel"/>
+            </h:selectOneMenu>
+
+            <h:outputText value="Artist"/>
+            <h:selectOneMenu id="artistSel" value="#{albumDetailsView.selectedAlbum.artist}" converter="#{albumDetailsView.artistConverter}">
+                <f:selectItem noSelectionOption="true"/>
+                <f:selectItems value="#{albumDetailsView.availableArtists}" var="art" itemLabel="#{art.name}" itemValue="#{art}"/>
+                <a4j:ajax render="ensebleSel"/>
+            </h:selectOneMenu>
+        </h:panelGrid>
+
+        <h:panelGrid columns="2">
+            <h:commandButton value="Delete">
+                <a4j:ajax listener="#{albumDetailsView.removeSelectedTracks}" render="tracksList"/>
+            </h:commandButton>
+            <a4j:commandButton value="Add new">
+                <rich:componentControl target="newTrackPopup" operation="show"/>
+            </a4j:commandButton>
+        </h:panelGrid>
+        <rich:dataTable id="tracksList" value="#{albumDetailsView.tracksAsList}" var="track">
+            <rich:column>
+                <h:selectBooleanCheckbox value="#{albumDetailsView.selectedTracks[track]}"/>
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">ID</f:facet>
+                #{track.id}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">Artist or ensemble</f:facet>
+                #{track.album.artistNameOrEnsembleName}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">Title</f:facet>
+                #{track.recording.title}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">Track position</f:facet>
+                #{track.position}
+            </rich:column>
+        </rich:dataTable>
+
+        <h:commandButton value="New" action="#{albumDetailsView.newAction()}" immediate="true"/>
+        <h:commandButton value="Save" action="#{albumDetailsView.saveAction()}">
+            <a4j:ajax execute="@form" render="encForm"/>
+        </h:commandButton>
+        <h:commandButton value="Cancel" immediate="true"/>
+    </h:form>
+
+
+    <!--pop up-->
+    <rich:popupPanel id="newTrackPopup" modal="true" autosized="true">
+        <f:facet name="header">
+            <h:outputLink value="#" onclick="#{rich:component('newTrackPopup')}.hide(); return false;">
+                X
+            </h:outputLink>
+        </f:facet>
+        <h:form>
+            <rich:dataTable value="#{albumDetailsView.availableRecordings}" var="rec">
+                <rich:column>
+                    <h:selectBooleanCheckbox value="#{albumDetailsView.selectedRecordings[rec]}"/>
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">ID</f:facet>
+                    #{rec.id}
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">Artist name</f:facet>
+                    #{rec.artist.name}
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">Title</f:facet>
+                    #{rec.title}
+                </rich:column>
+
+            </rich:dataTable>
+            <h:panelGrid columns="2">
+                <h:commandButton value="Select" action="#{albumDetailsView.addRecordingsAction}">
+                    <a4j:ajax execute="@form" render="tracksList"/>
+                    <rich:componentControl target="newTrackPopup" operation="hide"/>
+                </h:commandButton>
+                <a4j:commandButton value="Cancel">
+                    <rich:componentControl target="newTrackPopup" operation="hide"/>
+                </a4j:commandButton>
+            </h:panelGrid>
+        </h:form>
+    </rich:popupPanel>
 
 </h:body>
 

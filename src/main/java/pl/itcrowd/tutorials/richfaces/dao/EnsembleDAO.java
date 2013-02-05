@@ -2,10 +2,14 @@ package pl.itcrowd.tutorials.richfaces.dao;
 
 import pl.itcrowd.tutorials.richfaces.domain.Ensemble;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@ManagedBean
+@SessionScoped
 public class EnsembleDAO {
 
     private final List<Ensemble> ensembles;
