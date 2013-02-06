@@ -29,7 +29,7 @@ public class PhaseListener implements javax.faces.event.PhaseListener{
     @Override
     public void afterPhase(PhaseEvent phaseEvent)
     {
-        System.out.println("BEFORE:" + phaseEvent.getPhaseId());
+        LOGGER.info("AFTER:" + phaseEvent.getPhaseId());
     }
 
     @Override
@@ -42,6 +42,6 @@ public class PhaseListener implements javax.faces.event.PhaseListener{
         this.requestCounter = (RequestCounter)valueExpression.getValue(elContext);
 
         LOGGER.info("Request count:"+requestCounter.getRequestCount());
-        System.out.println("AFTER:" + phaseEvent.getPhaseId());
+        LOGGER.info("BEFORE:" + phaseEvent.getPhaseId());
     }
 }
