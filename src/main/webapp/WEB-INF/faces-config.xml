@@ -2,6 +2,10 @@
 <faces-config xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd" version="2.1">
 
+    <lifecycle>
+        <phase-listener>pl.itcrowd.tutorials.richfaces.utils.PhaseListener</phase-listener>
+    </lifecycle>
+
     <application>
         <locale-config>
             <default-locale>en_GB</default-locale>

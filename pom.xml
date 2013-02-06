@@ -42,6 +42,11 @@
             <artifactId>richfaces-components-ui</artifactId>
             <version>4.3.0.CR2</version>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.el</groupId>
+            <artifactId>jboss-el-api_2.2_spec</artifactId>
+            <version>1.0.2.Final</version>
+        </dependency>
     </dependencies>
 
     <build>
